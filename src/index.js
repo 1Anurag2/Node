@@ -1,34 +1,31 @@
-// require('dotenv').config({path:'./env'})
-
-import dotenv from "dotenv"
-
-// import mongoose from "mongoose";
-// import { DB_NAME } from "./constants.js";
-
+import dotenv from "dotenv";
+import express from "express";
 import connectDB from "./db/main.js";
 
-
-// import express from "express"
-// const app = express()
-
+// Load environment variables from .env file
 dotenv.config({
-    path:'./env'
-})
+    path: './.env'
+});
 
+// Initialize Express app
+const app = express();
+
+// Middleware example (optional)
+app.use(express.json()); // Middleware to parse JSON requests
+
+// Test route (optional)
+app.get('/', (req, res) => {
+    res.send('API is running...');
+});
+
+// Connect to MongoDB and start server
 connectDB()
-
-/*;(async ()=>{
-    try{
-        await mongoose.connect(`${process.env.
-        MONGODB_URI}/${DB_NAME}`)
-        app.on("error",(error)=>{
-            console.log("ERROR:",error)
-        })
-        app.listen(process.env.PORT,()=>{
-            console.log(`App is listening on port ${process.env.PORT}`);
-        })
-    } catch(error){
-        console.error("ERROR:",error)
-        throw err
-    }
-})()*/
+    .then(() => {
+        const PORT = process.env.PORT || 8000;
+        app.listen(PORT, () => {
+            console.log(`Server is running at port: ${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.log("MongoDB connection failed!", err);
+    });
